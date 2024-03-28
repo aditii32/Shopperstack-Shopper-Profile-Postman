@@ -1,0 +1,287 @@
+{
+	"info": {
+		"_postman_id": "6ce8e6e9-ebfc-4f07-be89-48ecaa002333",
+		"name": "Shoppers Profile",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33643733",
+		"_collection_link": "https://www.postman.com/spacecraft-specialist-7984735/workspace/shopperstack/collection/33643733-6ce8e6e9-ebfc-4f07-be89-48ecaa002333?action=share&source=collection_link&creator=33643733"
+	},
+	"item": [
+		{
+			"name": "Register as a shopper",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function generateRandomEmail(){\r",
+							"    var chars='abcdefghijklmnopqrstuvwxyz0123456789';\r",
+							"    var domain='gmail.com';\r",
+							"    var email='';\r",
+							"    for(var i=0;i<10;i++){\r",
+							"        email +=chars.charAt(Math.floor(Math.random()*chars.length));\r",
+							"    }\r",
+							"    email+='@'+domain;\r",
+							"    return email;\r",
+							"}\r",
+							"\r",
+							"var randomEmail=generateRandomEmail();\r",
+							"console.log(\"Random EmailID:\",randomEmail);\r",
+							"\r",
+							"pm.globals.set(\"random Email\",randomEmail);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"city\": \"Pune\",\r\n  \"country\": \"India\",\r\n  \"email\": \"adi10@gmail.com\",\r\n  \"firstName\": \"Aditi\",\r\n  \"gender\": \"FEMALE\",\r\n  \"lastName\": \"Bansode\",\r\n  \"password\": \"adi123\",\r\n  \"phone\": 8767140867,\r\n  \"state\": \"Maharashtra\",\r\n  \"zoneId\": \"ALPHA\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/shoppers?zoneId=ALPHA",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"shoppers"
+					],
+					"query": [
+						{
+							"key": "zoneId",
+							"value": "ALPHA"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Shopper Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"shopper id fetched\",function()\r",
+							"{\r",
+							"    pm.globals.set(\"jwtToken\",pm.response.json().data.jwtToken);\r",
+							"    pm.globals.set(\"userId\",pm.response.json().data.userId)\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"adi10@gmail.com\",\r\n  \"password\": \"adi123\",\r\n  \"role\": \"SHOPPER\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/users/login",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find Shopper data by shopperId",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWTtoken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/shoppers/{{shopperId}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"shoppers",
+						"{{shopperId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update the shopper Details",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWTtoken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"city\": \"Pune\",\r\n  \"country\": \"India\",\r\n  \"email\": \"adi@gmail.com\",\r\n  \"firstName\": \"Aditi\",\r\n  \"gender\": \"FEMALE\",\r\n  \"lastName\": \"Bansode\",\r\n  \"password\": \"adi123\",\r\n  \"phone\": 7743839339,\r\n  \"state\": \"Maharashtra\",\r\n  \"zoneId\": \"ALPHA\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/shoppers/{{shopperId}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"shoppers",
+						"{{shopperId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Genarates URL for forgot password",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "email",
+						"value": "adi@gmail.com",
+						"type": "text"
+					},
+					{
+						"key": "role",
+						"value": "SHOPPER",
+						"type": "text"
+					},
+					{
+						"key": "verifyUrl",
+						"value": "verifyUrl",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{BaseUrl}}/users/forgot-password",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"users",
+						"forgot-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Resets the password",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/users/reset-password",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"users",
+						"reset-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set user password",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "password",
+						"value": "Aditi123",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{BaseUrl}}/users/verify-account?token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"users",
+						"verify-account"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
